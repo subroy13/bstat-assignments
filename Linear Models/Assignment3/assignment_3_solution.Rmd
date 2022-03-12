@@ -1,0 +1,142 @@
+---
+title: "Linear Models Assignment 3"
+author: "Subhrajyoty Roy (BS-1613)"
+date: "October 25, 2018"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, comment="", cache = TRUE)
+```
+
+# Loading the Prequisites Libraries
+  
+  The package *reshape2* has been used in order to mainpulate the structure of the data and transform it into the required format. I have mainly used *DescTools* package to obtain the multiple comparison tests. However, there is no support for bonferroni test for arbitrary contrasts in *DescTools* package, so I need to use *multcomp* package for this purpose. The guide is given in the url: https://stat.ethz.ch/~meier/teaching/anova/contrasts-and-multiple-testing.html
+
+```{r}
+library(reshape2)
+library(DescTools)
+library(multcomp)
+```
+
+  I have used the packages *rmarkdown*, *knitr* and *kableExtra* in order to generate the report in .pdf format.
+  
+```{r}
+library(knitr)
+library(kableExtra)
+```
+
+# Question 1
+**Consider problem  1 of your Assignment 1. For each program, you delete two observations and thus it is a balanced one way model.**
+
+```{r}
+firmdata <- data.frame(prog1 = c(9,12,14,11,13), prog2 = c(10,6,9,9,10),
+                       prog3 = c(12,14,11,13,11), prog4 = c(9,8,11,7,8))
+kable(firmdata) %>% kable_styling(full_width = F)
+```
+
+  Now, I have to delete two observations for each program.
+  
+```{r}
+set.seed(1613)  #this is my roll number, set the seed for reproducbility
+x = sample(1:5, size = 2)
+firmdata = firmdata[-x,]  #remove the corresponding observations
+firmdata = melt(firmdata)
+firmdata$variable = as.factor(firmdata$variable)
+kable(firmdata) %>% kable_styling(full_width = F)
+```
+
+**Let the effect of Program i be denoted by $\alpha_i$.  Let the set S1 denote the collection of elementary contrasts of the form $\alpha_i-\alpha_j, i<j$.   Let  S2 denote the collection of  general  contrasts of the form $\alpha_1 - 2\alpha_2 + \alpha_3$ and $2\alpha_1 - \alpha_2 - \alpha_3$. Let S3  be the union of S2 and S1. Compute simultaneous confidence intervals  with 95% confidence coefficient for S1 with Scheffe, Tukey and Bonferroni's method.**
+
+```{r}
+#fits the ANOVA model
+model = aov(value ~ variable, firmdata)
+
+#calculates the Tukey HSD
+res = PostHocTest(model, method = "hsd", conf.level = 0.95)  
+res[[1]] = cbind(res[[1]], length = (res[[1]][,"upr.ci"] - res[[1]][,"lwr.ci"])) 
+#create a new column containing length of the intervals
+print(res)
+
+#calculates the Scheffe's test
+res = PostHocTest(model, method = "scheffe", conf.level = 0.95)  
+res[[1]] = cbind(res[[1]], length = (res[[1]][,"upr.ci"] - res[[1]][,"lwr.ci"]))
+print(res)
+
+#calculates the Bonferroni's test
+res = PostHocTest(model, method = "bonferroni", conf.level = 0.95)  
+res[[1]] = cbind(res[[1]], length = (res[[1]][,"upr.ci"] - res[[1]][,"lwr.ci"]))
+print(res)
+```
+
+
+**For S2 and S3 obtain simultaneous confidence intervals using Scheffe's  method as well as Bonferroni's method.**
+
+   Firstly, the matrix containing the coefficients for each of the contrasts is created.
+  
+```{r}
+s2 = Permn(c(0,-1,-1,2))  #computes all permutations of the coefficients
+colnames(s2) <-paste("Coefficient of prog", 1:4)
+kable(s2) %>% kable_styling(full_width = F)
+```
+
+  I obtain simulteneous confidence intervals for the above set of contrasts in S2 using the method of Scheffe.
+
+```{r}
+res = ScheffeTest(model, conf.level = 0.95, contrasts = t(s2))
+res[[1]] = cbind(res[[1]], length = (res[[1]][,"upr.ci"] - res[[1]][,"lwr.ci"]))
+print(res)
+```
+
+  I obtain simulteneous confidence intervals for the same set of contrasts using the method of Bonferroni. 
+  
+```{r}
+model.gh = glht(model, linfct = mcp(variable = s2))  #set the contrasts
+res.gh = confint(model.gh, test = adjusted("bonferroni"))
+print(res.gh)
+res.gh$confint[,"upr"] - res.gh$confint[,"lwr"] #compute the lengths of CI's
+```
+  
+  Now, I have performed the similar for the set of contrasts in s3. There would be (12+6) = 18 many contrasts in s3.
+
+```{r}
+#computes the 6 pairwise contrasts
+s1 <- rbind(c(-1,1,0,0), c(-1,0,1,0), c(-1,0,0,1), c(0,-1,1,0), c(0,-1,0,1), c(0,0,-1,1))  
+s3 <- rbind(s1, s2)
+colnames(s3) <-paste("Coefficient of prog", 1:4)
+kable(s3) %>% kable_styling(full_width = F)
+
+
+res = ScheffeTest(model, conf.level = 0.95, contrasts = t(s3))
+res[[1]] = cbind(res[[1]], length = (res[[1]][,"upr.ci"] - res[[1]][,"lwr.ci"]))
+print(res)
+
+model.gh = glht(model, linfct = mcp(variable = s3))  #set the contrasts
+res.gh = confint(model.gh, test = adjusted("bonferroni"))
+print(res.gh)
+res.gh$confint[,"upr"] - res.gh$confint[,"lwr"] #compute the lengths of CI's
+```
+
+**For each of the three sets, which procedure works out the best?**
+
+  The discussion regarding the best procedure has been divided into the three parts, each for different sets of contrasts.
+
+1. Starting with S1, Tukey's Honest Significant Difference method gives a 95% confidence interval of length 9.18 units, Scheffe's method gives a 95% CI of length 10.01 units and Bonferroni's method gives a 95% CI of length 9.97 units. Clearly, from the tightness of the confidence interval as the evaluation criterion, it is seen that Tukey's method works best for pairwise contrasts.
+
+2. For the set of contrasts in S2, Scheffe's method gives the 95% confidence interval of length 17.34 units, while Bonferroni's method gives the 95% CI of length 16.52 units. In this regard, Bonferroni's method works better.
+
+3. For the set of contrasts in S2, Scheffe's method gives the 95% confidence interval of length 10.01 units for the pairwise difference contrasts and 17.34 units for the general contrasts, while Bonferroni's method gives the 95% CI of length 9.66 units for pairwise difference contrasts and 16.73 units for the general contrasts. In this case also, Bonferroni's method works better.
+
+Finally, we see that Tukey's test is best in case of finding the simulteneous confidence intervals pairwise difference contrasts. But, in case of sets of more general contrasts, bonferroni's method works better. However, observe that the length of the confidence interval in scheffe's method does not increase even if more contrasts are added, while the length of CI given by bonferroni's method increases. This shows an indication that if there are lots of contrasts for which simulteneous confidence intervals are to be found, bonferroni's method will not remain better than Scheffe's method.
+  
+
+# THANK YOU
+
+
+
+
+
+
+

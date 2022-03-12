@@ -1,0 +1,26 @@
+cor(Age,Height) 0.07136433
+cor(Age,Lung.Capacity..cc.) 0.1074071
+cor(Height,Lung.Capacity..cc.) 0.742703
+cor(Exercise,Lung.Capacity..cc.) 0.6204149
+cor(Height,Exercise) 0.4635669
+cor(Age,Exercise) 0.1600506
+
+cor(Exercise[Gender==male],Lung.Capacity..cc.[Gender==male]) 0.8145902
+cor(Exercise[Gender==female],Lung.Capacity..cc.[Gender==female]) 0.5497824
+
+cor(Exercise[Smoker==1],Lung.Capacity..cc.[Smoker==1]) 0.161776
+cor(Exercise[Smoker==1],Height[Smoker==1]) 0.2588487
+
+Table(Gender,Smoker)
+      Smoker
+Gender  0  1
+     0 30 20
+     1 31 19
+
+                     Height  Exercise        Age Lung.Capacity..cc.
+Height             1.00000000 0.4635669 0.07136433          0.7427030
+Exercise           0.46356686 1.0000000 0.16005056          0.6204149
+Age                0.07136433 0.1600506 1.00000000          0.1074071
+Lung.Capacity..cc. 0.74270302 0.6204149 0.10740713          1.0000000
+
+

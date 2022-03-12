@@ -1,0 +1,179 @@
+---
+title: "Linear Models Assignment 2"
+author: "Subhrajyoty Roy (BS - 1613)"
+date: "October 7, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "")
+```
+
+## Question 1
+
+**Consider data on Table 15.1.  One step in the manufacture of large engines requires that holes of very precise dimensions be drilled. The tools that do the drilling are regularly examined and are adjusted to ensure that the holes meet the required specifications. Part of the examination involves measurement of the diameter of the drilling tool. A team studying the variation in the sizes of the drilled holes selected this measurement procedure as a possible cause of variation in the drilled holes. They decided to use an experiment as one part of this examination.  The diameters in millimeters (mm) of five tools were measured by the same operator at three times (8:00 a.m., 11:00 a.m., and 3:00 p.m.). Three measurements were taken on each tool at each time. The person taking the measurements could not tell which tool was being measured, and the measurements were taken in random order.**
+
+```{r}
+tooldata <- read.csv('tool-diameter.csv')
+head(tooldata)
+sapply(tooldata, class)
+```
+
+  We find that *Tool* and *Time* are of integer data type, and we need to convert them as factors.
+  
+```{r}
+tooldata$Tool <- as.factor(tooldata$Tool)
+tooldata$Time <- as.factor(tooldata$Time)
+```
+
+  However, to perform two way ANOVA model, we need to stack the diameters in a single column. We are using *melt* function from *reshape2* package for this.
+  
+```{r warning=FALSE, message=FALSE}
+library(reshape2)
+tooldata = melt(tooldata)
+knitr::kable(head(tooldata))
+```
+
+**(a) Use different plots (to be decided by you) to summarize the main features of the data.**
+
+  Let us first check whether there seems some interaction effect between Tool and Time factors. We can visualize this using an interaction plot.
+
+```{r}
+interaction.plot(tooldata$Tool, tooldata$Time, tooldata$value, lwd = 2, xlab = "Tool", ylab = "Diameter", trace.label = "Time", col = c("red","darkgreen","blue"))
+```
+
+  We can also look at the boxplots of the diameter measurements with respect to different levels of tools and different levels of time.
+  
+```{r fig.width=10}
+par(mfrow = c(1,2))  #creates the grid for subplot
+boxplot(value ~ Tool, data = tooldata, main = "Boxplot w.r.t. Tool")
+boxplot(value ~ Time, data = tooldata, main = "Boxplot w.r.t. Time")
+```
+
+  It seems there are sufficient variation with respect to both the factors.
+  
+**(b) Use a suitable two way model to explain the data and analyze it. Write a short report on your findings from the plot as well as the ANOVA results.**
+
+  As it seems by the interaction plot, we consider a two way ANOVA model with interaction. The summary of the model is as follows:
+  
+```{r}
+fit <- aov(value ~ Tool * Time, data = tooldata)
+summary(fit)
+```
+  
+  We see that the p-value of the factor effects (i.e. of levels of *Tool* and levels of *Time*) and the interaction effect between the levels of factor *Tool* with levels of factor *Time* is considerably small. Therefore, under the significance level of 0.001, we reject the null hypothesis that these factors and interaction has no effect on the dimensions of holes. That means we accept the fact that the given data shows a strong indication of significant effects of *Tool* and *Time* and their interaction.
+  
+  This also agrees with the intuition of significant effects after the visualization of the boxplots.
+  
+## Question 2
+
+**Consider data on Table 15.2 which describe  a study designed to determine how the frequency that a supermarket product is promoted at a discount and the size of the discount affect the price that customers expect to pay for the product. Each one of you should delete some observations  to make this data set unbalanced such that  for  each  of the 40%, 30%, 20% and 10% discounts there are in all  38 observations, spread unequally  over the number of promotions. ( e.g. for 40% discount there are 9, 10, 10, 9 observations  across the number of promotions). **
+  
+```{r}
+pricedata <- read.csv('promotion-price.csv') #read the data
+pricedata$promotions <- as.factor(pricedata$promotions) #change into factor
+pricedata$discount <- as.factor(pricedata$discount)
+knitr::kable(head(pricedata, 3))  #check top 3 data
+```
+
+  Before proceeding, we should order this dataset according to *discount* prices. 
+
+```{r}
+pricedata <- pricedata[order(pricedata$discount),]  # sort the data w.r.t. discount variable
+rownames(pricedata) <- 1:nrow(pricedata)  #reorder rownames
+knitr::kable(head(pricedata,3))
+```
+
+  Now, we should delete some observation. For this, we choose 2 random numbers from 1 to 4, similarly from 5 to 8 and so on. After that, we choose one random number between 1 to 10 to remove the corresponding price.
+
+```{r}
+set.seed(1613)  #that is my roll number, set the seed for reproducibility
+a = list(1:4, 5:8, 9:12, 13:16)  #we should sample from each element of this list
+a = sort(sapply(a, sample, size = 2)) #performs the sampling
+b = sample(3:12, size = 8, replace = TRUE) #since 3:12 contains the prices
+for (i in 1:8){
+  pricedata[a[i], b[i]] <- NA  #set those values as NA
+}
+knitr::kable(head(pricedata))  #check top few data
+```
+
+  Again, we should *melt* the dataset so that the prices comes in a single column. 
+  
+```{r warning=FALSE, message=FALSE}
+pricedata <- melt(pricedata)
+pricedata <- pricedata[complete.cases(pricedata), ]  #removes the NA values
+knitr::kable(head(pricedata))
+```
+
+  To check whether there are unequal number of observations, consider the following.
+  
+```{r}
+table(pricedata$promotions)
+table(pricedata$discount)
+```
+  
+**Use different plots ( to be decided by you)  to summarize the main features of the data. ** 
+  
+  We again use interaction plot to see whether there is any interaction effect between discount and promotions.
+  
+```{r}
+interaction.plot(pricedata$discount, pricedata$promotions, pricedata$value, xlab = "Discount Rate", ylab = "Price", trace.label = "Promotions", lwd = 2)
+```
+
+  It seems that there is no strong interaction effect between these two factors in concern.
+
+  We can again see the boxplots of the prices with respect to different levels of Discount Rate and different levels of Promotion.
+  
+```{r fig.width=10}
+par(mfrow = c(1,2))  #creates the grid for subplot
+boxplot(value ~ promotions, data = pricedata, main = "Boxplot w.r.t. Promotions")
+boxplot(value ~ discount, data = pricedata, main = "Boxplot w.r.t. Discount")
+```
+  
+**Analyze the data with a two-way ANOVA without interaction. (Justify from your plots if this is a reasonable assumption). Prepare a short report using your plots and ANOVA results, explaining how the expected price depends on the number of promotions and the percent of the discount.**
+  
+  We clearly observe that from the interaction plot itself, we do not find any reasonably strong interaction effect. However, we should perform a statistical test in order to justify our claim.
+  
+```{r}
+fit <- aov(value ~ discount * promotions, pricedata)
+summary(fit)
+```
+
+  Observe that in two-way unbalanced ANOVA model, the sum of squares of the interaction does not depend on the order of the explanatory covariates. Hence, from the above table, we find that the F-value for the interaction effect is resonably low, as well as the p-value is quite high, nearly 1. This suggests that we should not reject the null hypothesis that there is no interaction effect based on the above data.
+<br/>
+  Now, we can simply ignore the effect of interaction and fit a two-way ANOVA model without interaction. In such a case, there are two possible hypothesis to test:
+  
+* There is no effect of the variable discount.
+* There is no effect of the variable promotions.
+
+  Starting with the first hypothesis, we require the adjusted sum of squares for the variable discount, after adjusting for the effect of promotions variable. Hence, we perform the following test.
+  
+```{r}
+fit <- aov(value ~ promotions + discount, pricedata)
+summary(fit)
+```
+
+  We observe that the p-value of the F-statistic for adjusted discount variable is extremely close to 0, suggesting we should reject the null hypothesis that there is no effect of discount variable, i.e. accepting that the variable discount plays a significant role in determination of price of the commodity.
+<br/>
+  To test the second hypothesis, we require to perform the same statistical test, but reversing the order of the covariates.
+  
+```{r}
+fit <- aov(value ~ discount + promotions, pricedata)
+summary(fit)
+```
+  
+  We find that the F-statistic does not differ much. Also, noting that the p-value corresponding to the promotion variable being reasonably low, we can reject the null hypothesis that promotion has no effect and conclude that the variable promotion has statistically significant effect on determination of price variable.
+
+```{r}
+print(fit$coefficients)
+```
+  
+  From the above list of coefficients, we can explain the effect of different levels of factors in determination of the price. Starting with the base level, i.e. when promotion is at level 1 and discount is 10%, then the expected price is 4.87. Increasing promotion to level 3, 5 and 7 decreases the expected price by 0.15, 0.41 and 0.57 respectively. After eliminating the effect of the promotions, increasing discount rate to 20%, 30% or 40%, decreases the expected price by 0.19, 0.60 and 0.46 units respectively.
+
+# THANK YOU
+
+<br style="line-height:250px"/>
+  
+  
+
+

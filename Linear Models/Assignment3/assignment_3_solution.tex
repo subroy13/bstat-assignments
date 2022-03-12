@@ -1,0 +1,662 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{float}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Linear Models Assignment 3},
+            pdfauthor={Subhrajyoty Roy (BS-1613)},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Linear Models Assignment 3}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Subhrajyoty Roy (BS-1613)}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{October 25, 2018}
+
+
+\begin{document}
+\maketitle
+
+\section{Loading the Prequisites
+Libraries}\label{loading-the-prequisites-libraries}
+
+The package \emph{reshape2} has been used in order to mainpulate the
+structure of the data and transform it into the required format. I have
+mainly used \emph{DescTools} package to obtain the multiple comparison
+tests. However, there is no support for bonferroni test for arbitrary
+contrasts in \emph{DescTools} package, so I need to use \emph{multcomp}
+package for this purpose. The guide is given in the url:
+\url{https://stat.ethz.ch/~meier/teaching/anova/contrasts-and-multiple-testing.html}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(reshape2)}
+\KeywordTok{library}\NormalTok{(DescTools)}
+\KeywordTok{library}\NormalTok{(multcomp)}
+\end{Highlighting}
+\end{Shaded}
+
+I have used the packages \emph{rmarkdown}, \emph{knitr} and
+\emph{kableExtra} in order to generate the report in .pdf format.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(knitr)}
+\KeywordTok{library}\NormalTok{(kableExtra)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Question 1}\label{question-1}
+
+\textbf{Consider problem 1 of your Assignment 1. For each program, you
+delete two observations and thus it is a balanced one way model.}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{firmdata <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{prog1 =} \KeywordTok{c}\NormalTok{(}\DecValTok{9}\NormalTok{,}\DecValTok{12}\NormalTok{,}\DecValTok{14}\NormalTok{,}\DecValTok{11}\NormalTok{,}\DecValTok{13}\NormalTok{), }\DataTypeTok{prog2 =} \KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{6}\NormalTok{,}\DecValTok{9}\NormalTok{,}\DecValTok{9}\NormalTok{,}\DecValTok{10}\NormalTok{),}
+                       \DataTypeTok{prog3 =} \KeywordTok{c}\NormalTok{(}\DecValTok{12}\NormalTok{,}\DecValTok{14}\NormalTok{,}\DecValTok{11}\NormalTok{,}\DecValTok{13}\NormalTok{,}\DecValTok{11}\NormalTok{), }\DataTypeTok{prog4 =} \KeywordTok{c}\NormalTok{(}\DecValTok{9}\NormalTok{,}\DecValTok{8}\NormalTok{,}\DecValTok{11}\NormalTok{,}\DecValTok{7}\NormalTok{,}\DecValTok{8}\NormalTok{))}
+\KeywordTok{kable}\NormalTok{(firmdata) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{kable_styling}\NormalTok{(}\DataTypeTok{full_width =}\NormalTok{ F)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{r|r|r|r}
+\hline
+prog1 & prog2 & prog3 & prog4\\
+\hline
+9 & 10 & 12 & 9\\
+\hline
+12 & 6 & 14 & 8\\
+\hline
+14 & 9 & 11 & 11\\
+\hline
+11 & 9 & 13 & 7\\
+\hline
+13 & 10 & 11 & 8\\
+\hline
+\end{tabular}
+\end{table}
+
+Now, I have to delete two observations for each program.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1613}\NormalTok{)  }\CommentTok{#this is my roll number, set the seed for reproducbility}
+\NormalTok{x =}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{, }\DataTypeTok{size =} \DecValTok{2}\NormalTok{)}
+\NormalTok{firmdata =}\StringTok{ }\NormalTok{firmdata[}\OperatorTok{-}\NormalTok{x,]  }\CommentTok{#remove the corresponding observations}
+\NormalTok{firmdata =}\StringTok{ }\KeywordTok{melt}\NormalTok{(firmdata)}
+\NormalTok{firmdata}\OperatorTok{$}\NormalTok{variable =}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(firmdata}\OperatorTok{$}\NormalTok{variable)}
+\KeywordTok{kable}\NormalTok{(firmdata) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{kable_styling}\NormalTok{(}\DataTypeTok{full_width =}\NormalTok{ F)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{l|r}
+\hline
+variable & value\\
+\hline
+prog1 & 9\\
+\hline
+prog1 & 12\\
+\hline
+prog1 & 13\\
+\hline
+prog2 & 10\\
+\hline
+prog2 & 6\\
+\hline
+prog2 & 10\\
+\hline
+prog3 & 12\\
+\hline
+prog3 & 14\\
+\hline
+prog3 & 11\\
+\hline
+prog4 & 9\\
+\hline
+prog4 & 8\\
+\hline
+prog4 & 8\\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Let the effect of Program i be denoted by \(\alpha_i\). Let the
+set S1 denote the collection of elementary contrasts of the form
+\(\alpha_i-\alpha_j, i<j\). Let S2 denote the collection of general
+contrasts of the form \(\alpha_1 - 2\alpha_2 + \alpha_3\) and
+\(2\alpha_1 - \alpha_2 - \alpha_3\). Let S3 be the union of S2 and S1.
+Compute simultaneous confidence intervals with 95\% confidence
+coefficient for S1 with Scheffe, Tukey and Bonferroni's method.}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#fits the ANOVA model}
+\NormalTok{model =}\StringTok{ }\KeywordTok{aov}\NormalTok{(value }\OperatorTok{~}\StringTok{ }\NormalTok{variable, firmdata)}
+
+\CommentTok{#calculates the Tukey HSD}
+\NormalTok{res =}\StringTok{ }\KeywordTok{PostHocTest}\NormalTok{(model, }\DataTypeTok{method =} \StringTok{"hsd"}\NormalTok{, }\DataTypeTok{conf.level =} \FloatTok{0.95}\NormalTok{)  }
+\NormalTok{res[[}\DecValTok{1}\NormalTok{]] =}\StringTok{ }\KeywordTok{cbind}\NormalTok{(res[[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{length =}\NormalTok{ (res[[}\DecValTok{1}\NormalTok{]][,}\StringTok{"upr.ci"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{res[[}\DecValTok{1}\NormalTok{]][,}\StringTok{"lwr.ci"}\NormalTok{])) }
+\CommentTok{#create a new column containing length of the intervals}
+\KeywordTok{print}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+  Posthoc multiple comparisons of means : Tukey HSD 
+    95% family-wise confidence level
+
+$variable
+                  diff     lwr.ci    upr.ci   pval   length    
+prog2-prog1 -2.6666667 -7.2579456 1.9246123 0.3155 9.182558    
+prog3-prog1  1.0000000 -3.5912789 5.5912789 0.8952 9.182558    
+prog4-prog1 -3.0000000 -7.5912789 1.5912789 0.2340 9.182558    
+prog3-prog2  3.6666667 -0.9246123 8.2579456 0.1241 9.182558    
+prog4-prog2 -0.3333333 -4.9246123 4.2579456 0.9952 9.182558    
+prog4-prog3 -4.0000000 -8.5912789 0.5912789 0.0895 9.182558 .  
+
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#calculates the Scheffe's test}
+\NormalTok{res =}\StringTok{ }\KeywordTok{PostHocTest}\NormalTok{(model, }\DataTypeTok{method =} \StringTok{"scheffe"}\NormalTok{, }\DataTypeTok{conf.level =} \FloatTok{0.95}\NormalTok{)  }
+\NormalTok{res[[}\DecValTok{1}\NormalTok{]] =}\StringTok{ }\KeywordTok{cbind}\NormalTok{(res[[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{length =}\NormalTok{ (res[[}\DecValTok{1}\NormalTok{]][,}\StringTok{"upr.ci"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{res[[}\DecValTok{1}\NormalTok{]][,}\StringTok{"lwr.ci"}\NormalTok{]))}
+\KeywordTok{print}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+  Posthoc multiple comparisons of means : Scheffe Test 
+    95% family-wise confidence level
+
+$variable
+                  diff    lwr.ci   upr.ci   pval   length    
+prog2-prog1 -2.6666667 -7.674139 2.340806 0.3854 10.01494    
+prog3-prog1  1.0000000 -4.007472 6.007472 0.9188 10.01494    
+prog4-prog1 -3.0000000 -8.007472 2.007472 0.2967 10.01494    
+prog3-prog2  3.6666667 -1.340806 8.674139 0.1682 10.01494    
+prog4-prog2 -0.3333333 -5.340806 4.674139 0.9964 10.01494    
+prog4-prog3 -4.0000000 -9.007472 1.007472 0.1249 10.01494    
+
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#calculates the Bonferroni's test}
+\NormalTok{res =}\StringTok{ }\KeywordTok{PostHocTest}\NormalTok{(model, }\DataTypeTok{method =} \StringTok{"bonferroni"}\NormalTok{, }\DataTypeTok{conf.level =} \FloatTok{0.95}\NormalTok{)  }
+\NormalTok{res[[}\DecValTok{1}\NormalTok{]] =}\StringTok{ }\KeywordTok{cbind}\NormalTok{(res[[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{length =}\NormalTok{ (res[[}\DecValTok{1}\NormalTok{]][,}\StringTok{"upr.ci"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{res[[}\DecValTok{1}\NormalTok{]][,}\StringTok{"lwr.ci"}\NormalTok{]))}
+\KeywordTok{print}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+  Posthoc multiple comparisons of means : Bonferroni 
+    95% family-wise confidence level
+
+$variable
+                  diff    lwr.ci    upr.ci   pval   length    
+prog2-prog1 -2.6666667 -7.654408 2.3210751 0.5996 9.975483    
+prog3-prog1  1.0000000 -3.987742 5.9877417 1.0000 9.975483    
+prog4-prog1 -3.0000000 -7.987742 1.9877417 0.4185 9.975483    
+prog3-prog2  3.6666667 -1.321075 8.6544084 0.2027 9.975483    
+prog4-prog2 -0.3333333 -5.321075 4.6544084 1.0000 9.975483    
+prog4-prog3 -4.0000000 -8.987742 0.9877417 0.1414 9.975483    
+
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\textbf{For S2 and S3 obtain simultaneous confidence intervals using
+Scheffe's method as well as Bonferroni's method.}
+
+Firstly, the matrix containing the coefficients for each of the
+contrasts is created.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{s2 =}\StringTok{ }\KeywordTok{Permn}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))  }\CommentTok{#computes all permutations of the coefficients}
+\KeywordTok{colnames}\NormalTok{(s2) <-}\KeywordTok{paste}\NormalTok{(}\StringTok{"Coefficient of prog"}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{)}
+\KeywordTok{kable}\NormalTok{(s2) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{kable_styling}\NormalTok{(}\DataTypeTok{full_width =}\NormalTok{ F)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{r|r|r|r}
+\hline
+Coefficient of prog 1 & Coefficient of prog 2 & Coefficient of prog 3 & Coefficient of prog 4\\
+\hline
+0 & -1 & -1 & 2\\
+\hline
+-1 & 0 & -1 & 2\\
+\hline
+-1 & -1 & 0 & 2\\
+\hline
+-1 & -1 & 2 & 0\\
+\hline
+0 & -1 & 2 & -1\\
+\hline
+-1 & 0 & 2 & -1\\
+\hline
+-1 & 2 & 0 & -1\\
+\hline
+-1 & 2 & -1 & 0\\
+\hline
+0 & 2 & -1 & -1\\
+\hline
+2 & 0 & -1 & -1\\
+\hline
+2 & -1 & 0 & -1\\
+\hline
+2 & -1 & -1 & 0\\
+\hline
+\end{tabular}
+\end{table}
+
+I obtain simulteneous confidence intervals for the above set of
+contrasts in S2 using the method of Scheffe.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{res =}\StringTok{ }\KeywordTok{ScheffeTest}\NormalTok{(model, }\DataTypeTok{conf.level =} \FloatTok{0.95}\NormalTok{, }\DataTypeTok{contrasts =} \KeywordTok{t}\NormalTok{(s2))}
+\NormalTok{res[[}\DecValTok{1}\NormalTok{]] =}\StringTok{ }\KeywordTok{cbind}\NormalTok{(res[[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{length =}\NormalTok{ (res[[}\DecValTok{1}\NormalTok{]][,}\StringTok{"upr.ci"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{res[[}\DecValTok{1}\NormalTok{]][,}\StringTok{"lwr.ci"}\NormalTok{]))}
+\KeywordTok{print}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+  Posthoc multiple comparisons of means : Scheffe Test 
+    95% family-wise confidence level
+
+$variable
+                       diff     lwr.ci    upr.ci   pval   length    
+prog4-prog2,prog3 -4.333333 -13.006530  4.339863 0.4353 17.34639    
+prog4-prog1,prog3 -7.000000 -15.673197  1.673197 0.1204 17.34639    
+prog4-prog1,prog2 -3.333333 -12.006530  5.339863 0.6325 17.34639    
+prog3-prog1,prog2  4.666667  -4.006530 13.339863 0.3774 17.34639    
+prog3-prog2,prog4  7.666667  -1.006530 16.339863 0.0849 17.34639 .  
+prog3-prog1,prog4  5.000000  -3.673197 13.673197 0.3250 17.34639    
+prog2-prog1,prog4 -2.333333 -11.006530  6.339863 0.8286 17.34639    
+prog2-prog1,prog3 -6.333333 -15.006530  2.339863 0.1697 17.34639    
+prog2-prog3,prog4 -3.333333 -12.006530  5.339863 0.6325 17.34639    
+prog1-prog3,prog4  2.000000  -6.673197 10.673197 0.8824 17.34639    
+prog1-prog2,prog4  5.666667  -3.006530 14.339863 0.2368 17.34639    
+prog1-prog2,prog3  1.666667  -7.006530 10.339863 0.9267 17.34639    
+
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+I obtain simulteneous confidence intervals for the same set of contrasts
+using the method of Bonferroni.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model.gh =}\StringTok{ }\KeywordTok{glht}\NormalTok{(model, }\DataTypeTok{linfct =} \KeywordTok{mcp}\NormalTok{(}\DataTypeTok{variable =}\NormalTok{ s2))  }\CommentTok{#set the contrasts}
+\NormalTok{res.gh =}\StringTok{ }\KeywordTok{confint}\NormalTok{(model.gh, }\DataTypeTok{test =} \KeywordTok{adjusted}\NormalTok{(}\StringTok{"bonferroni"}\NormalTok{))}
+\KeywordTok{print}\NormalTok{(res.gh)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+     Simultaneous Confidence Intervals
+
+Multiple Comparisons of Means: User-defined Contrasts
+
+
+Fit: aov(formula = value ~ variable, data = firmdata)
+
+Quantile = 3.3277
+95% family-wise confidence level
+ 
+
+Linear Hypotheses:
+        Estimate lwr      upr     
+1 == 0   -4.3333 -12.5968   3.9302
+2 == 0   -7.0000 -15.2635   1.2635
+3 == 0   -3.3333 -11.5968   4.9302
+4 == 0    4.6667  -3.5968  12.9302
+5 == 0    7.6667  -0.5968  15.9302
+6 == 0    5.0000  -3.2635  13.2635
+7 == 0   -2.3333 -10.5968   5.9302
+8 == 0   -6.3333 -14.5968   1.9302
+9 == 0   -3.3333 -11.5968   4.9302
+10 == 0   2.0000  -6.2635  10.2635
+11 == 0   5.6667  -2.5968  13.9302
+12 == 0   1.6667  -6.5968   9.9302
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{res.gh}\OperatorTok{$}\NormalTok{confint[,}\StringTok{"upr"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{res.gh}\OperatorTok{$}\NormalTok{confint[,}\StringTok{"lwr"}\NormalTok{] }\CommentTok{#compute the lengths of CI's}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+     1      2      3      4      5      6      7      8      9     10 
+16.527 16.527 16.527 16.527 16.527 16.527 16.527 16.527 16.527 16.527 
+    11     12 
+16.527 16.527 
+\end{verbatim}
+
+Now, I have performed the similar for the set of contrasts in s3. There
+would be (12+6) = 18 many contrasts in s3.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#computes the 6 pairwise contrasts}
+\NormalTok{s1 <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{), }\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))  }
+\NormalTok{s3 <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(s1, s2)}
+\KeywordTok{colnames}\NormalTok{(s3) <-}\KeywordTok{paste}\NormalTok{(}\StringTok{"Coefficient of prog"}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{)}
+\KeywordTok{kable}\NormalTok{(s3) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{kable_styling}\NormalTok{(}\DataTypeTok{full_width =}\NormalTok{ F)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{r|r|r|r}
+\hline
+Coefficient of prog 1 & Coefficient of prog 2 & Coefficient of prog 3 & Coefficient of prog 4\\
+\hline
+-1 & 1 & 0 & 0\\
+\hline
+-1 & 0 & 1 & 0\\
+\hline
+-1 & 0 & 0 & 1\\
+\hline
+0 & -1 & 1 & 0\\
+\hline
+0 & -1 & 0 & 1\\
+\hline
+0 & 0 & -1 & 1\\
+\hline
+0 & -1 & -1 & 2\\
+\hline
+-1 & 0 & -1 & 2\\
+\hline
+-1 & -1 & 0 & 2\\
+\hline
+-1 & -1 & 2 & 0\\
+\hline
+0 & -1 & 2 & -1\\
+\hline
+-1 & 0 & 2 & -1\\
+\hline
+-1 & 2 & 0 & -1\\
+\hline
+-1 & 2 & -1 & 0\\
+\hline
+0 & 2 & -1 & -1\\
+\hline
+2 & 0 & -1 & -1\\
+\hline
+2 & -1 & 0 & -1\\
+\hline
+2 & -1 & -1 & 0\\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{res =}\StringTok{ }\KeywordTok{ScheffeTest}\NormalTok{(model, }\DataTypeTok{conf.level =} \FloatTok{0.95}\NormalTok{, }\DataTypeTok{contrasts =} \KeywordTok{t}\NormalTok{(s3))}
+\NormalTok{res[[}\DecValTok{1}\NormalTok{]] =}\StringTok{ }\KeywordTok{cbind}\NormalTok{(res[[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{length =}\NormalTok{ (res[[}\DecValTok{1}\NormalTok{]][,}\StringTok{"upr.ci"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{res[[}\DecValTok{1}\NormalTok{]][,}\StringTok{"lwr.ci"}\NormalTok{]))}
+\KeywordTok{print}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+  Posthoc multiple comparisons of means : Scheffe Test 
+    95% family-wise confidence level
+
+$variable
+                        diff     lwr.ci    upr.ci   pval   length    
+prog2-prog1       -2.6666667  -7.674139  2.340806 0.3854 10.01494    
+prog3-prog1        1.0000000  -4.007472  6.007472 0.9188 10.01494    
+prog4-prog1       -3.0000000  -8.007472  2.007472 0.2967 10.01494    
+prog3-prog2        3.6666667  -1.340806  8.674139 0.1682 10.01494    
+prog4-prog2       -0.3333333  -5.340806  4.674139 0.9964 10.01494    
+prog4-prog3       -4.0000000  -9.007472  1.007472 0.1249 10.01494    
+prog4-prog2,prog3 -4.3333333 -13.006530  4.339863 0.4353 17.34639    
+prog4-prog1,prog3 -7.0000000 -15.673197  1.673197 0.1204 17.34639    
+prog4-prog1,prog2 -3.3333333 -12.006530  5.339863 0.6325 17.34639    
+prog3-prog1,prog2  4.6666667  -4.006530 13.339863 0.3774 17.34639    
+prog3-prog2,prog4  7.6666667  -1.006530 16.339863 0.0849 17.34639 .  
+prog3-prog1,prog4  5.0000000  -3.673197 13.673197 0.3250 17.34639    
+prog2-prog1,prog4 -2.3333333 -11.006530  6.339863 0.8286 17.34639    
+prog2-prog1,prog3 -6.3333333 -15.006530  2.339863 0.1697 17.34639    
+prog2-prog3,prog4 -3.3333333 -12.006530  5.339863 0.6325 17.34639    
+prog1-prog3,prog4  2.0000000  -6.673197 10.673197 0.8824 17.34639    
+prog1-prog2,prog4  5.6666667  -3.006530 14.339863 0.2368 17.34639    
+prog1-prog2,prog3  1.6666667  -7.006530 10.339863 0.9267 17.34639    
+
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model.gh =}\StringTok{ }\KeywordTok{glht}\NormalTok{(model, }\DataTypeTok{linfct =} \KeywordTok{mcp}\NormalTok{(}\DataTypeTok{variable =}\NormalTok{ s3))  }\CommentTok{#set the contrasts}
+\NormalTok{res.gh =}\StringTok{ }\KeywordTok{confint}\NormalTok{(model.gh, }\DataTypeTok{test =} \KeywordTok{adjusted}\NormalTok{(}\StringTok{"bonferroni"}\NormalTok{))}
+\KeywordTok{print}\NormalTok{(res.gh)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+     Simultaneous Confidence Intervals
+
+Multiple Comparisons of Means: User-defined Contrasts
+
+
+Fit: aov(formula = value ~ variable, data = firmdata)
+
+Quantile = 3.369
+95% family-wise confidence level
+ 
+
+Linear Hypotheses:
+        Estimate lwr      upr     
+1 == 0   -2.6667  -7.4968   2.1635
+2 == 0    1.0000  -3.8301   5.8301
+3 == 0   -3.0000  -7.8301   1.8301
+4 == 0    3.6667  -1.1635   8.4968
+5 == 0   -0.3333  -5.1635   4.4968
+6 == 0   -4.0000  -8.8301   0.8301
+7 == 0   -4.3333 -12.6994   4.0327
+8 == 0   -7.0000 -15.3661   1.3661
+9 == 0   -3.3333 -11.6994   5.0327
+10 == 0   4.6667  -3.6994  13.0327
+11 == 0   7.6667  -0.6994  16.0327
+12 == 0   5.0000  -3.3661  13.3661
+13 == 0  -2.3333 -10.6994   6.0327
+14 == 0  -6.3333 -14.6994   2.0327
+15 == 0  -3.3333 -11.6994   5.0327
+16 == 0   2.0000  -6.3661  10.3661
+17 == 0   5.6667  -2.6994  14.0327
+18 == 0   1.6667  -6.6994  10.0327
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{res.gh}\OperatorTok{$}\NormalTok{confint[,}\StringTok{"upr"}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{res.gh}\OperatorTok{$}\NormalTok{confint[,}\StringTok{"lwr"}\NormalTok{] }\CommentTok{#compute the lengths of CI's}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+        1         2         3         4         5         6         7 
+ 9.660288  9.660288  9.660288  9.660288  9.660288  9.660288 16.732110 
+        8         9        10        11        12        13        14 
+16.732110 16.732110 16.732110 16.732110 16.732110 16.732110 16.732110 
+       15        16        17        18 
+16.732110 16.732110 16.732110 16.732110 
+\end{verbatim}
+
+\textbf{For each of the three sets, which procedure works out the best?}
+
+The discussion regarding the best procedure has been divided into the
+three parts, each for different sets of contrasts.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Starting with S1, Tukey's Honest Significant Difference method gives a
+  95\% confidence interval of length 9.18 units, Scheffe's method gives
+  a 95\% CI of length 10.01 units and Bonferroni's method gives a 95\%
+  CI of length 9.97 units. Clearly, from the tightness of the confidence
+  interval as the evaluation criterion, it is seen that Tukey's method
+  works best for pairwise contrasts.
+\item
+  For the set of contrasts in S2, Scheffe's method gives the 95\%
+  confidence interval of length 17.34 units, while Bonferroni's method
+  gives the 95\% CI of length 16.52 units. In this regard, Bonferroni's
+  method works better.
+\item
+  For the set of contrasts in S2, Scheffe's method gives the 95\%
+  confidence interval of length 10.01 units for the pairwise difference
+  contrasts and 17.34 units for the general contrasts, while
+  Bonferroni's method gives the 95\% CI of length 9.66 units for
+  pairwise difference contrasts and 16.73 units for the general
+  contrasts. In this case also, Bonferroni's method works better.
+\end{enumerate}
+
+Finally, we see that Tukey's test is best in case of finding the
+simulteneous confidence intervals pairwise difference contrasts. But, in
+case of sets of more general contrasts, bonferroni's method works
+better. However, observe that the length of the confidence interval in
+scheffe's method does not increase even if more contrasts are added,
+while the length of CI given by bonferroni's method increases. This
+shows an indication that if there are lots of contrasts for which
+simulteneous confidence intervals are to be found, bonferroni's method
+will not remain better than Scheffe's method.
+
+\section{THANK YOU}\label{thank-you}
+
+
+\end{document}

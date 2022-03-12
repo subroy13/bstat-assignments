@@ -1,0 +1,13 @@
+set.seed(13)
+x1= runif(0, 50, n= 100)
+set.seed(17)
+x2= rnorm(0, 10, n= 100)
+set.seed(19)
+x3= rnorm(19, 27, n= 100)
+set.seed(23)
+x4= rexp(13, n= 100)
+set.seed(29)
+e= rnorm(mean= 0, sd= 5, n=100)
+y= x1+x2+x3+x4+e
+model= lm(y ~ x1 + x2 + x3 + x4)
+res= resid(model)

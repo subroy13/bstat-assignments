@@ -1,0 +1,72 @@
+---
+title: "Assignment 3 (Convex Hull Algorithms)"
+author: "Subhrajyoty Roy (BS - 1613)"
+date: "September 21, 2018"
+output: 
+  html_document:
+    df_print: paged
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introduction
+
+  This Assignment comprises of the simulation of different Convex Hull building algorithms like Jarvis March and Graham's scan. Convex hull building is a very important problem in the aspect of graphical algorithms. The number of comparisons made and the time taken by these algorithms are obtained for different sizes of inputs.
+  
+## Simulation Results
+  
+  The time is the average amount of time in milliseconds taken by the algorithm to find convex hull of randomly generated points of a given size. Each algorithm is run for 500 times with different points generated and then the average time is computed.
+  
+```{r echo=FALSE, comment="", message=FALSE, warning=FALSE}
+library(knitr)
+library(kableExtra)
+N = c(10, 50, 100, 200, 500, 1000, 2000, 3000, 5000, 10000)
+
+JarvisMarch.Time = c(0.02, 0.032, 0.064, 0.124, 0.314, 0.718, 1.562, 2.406, 4.47, 9.062)
+GrahamScan.Time = c(0.065, 0.124, 0.218, 0.408, 1.124, 2.376, 5.156, 8.156, 14.352, 27.188)
+
+data = data.frame(N, JarvisMarch.Time, GrahamScan.Time)
+
+data %>% kable() %>% kable_styling()
+```
+
+## Plots (Number of Points vs Time)
+
+  The following plot shows the N (Problem size) i.e. the number of the points on the x-axis and the logarithm of the average time taken to compute the convex hull is shown on the y-axis.
+  
+```{r}
+plot(N, log2(GrahamScan.Time), type = "l", col = "blue", xlab = "Number of Points", ylab = "Log_2(Average Time to compute Convex Hull)", main = "Number of Points vs Average Time taken to compute Convex Hull")
+points(N, log2(JarvisMarch.Time), type = "l", col = "red")
+legend("bottomright", legend = c("Jarvis March", "Graham Scan"), col = c("red", "blue"), lwd = 2)
+```
+
+  We see that the algorithm Jarvis March is working faster than Graham Scan, which is counter-intuitive. Before moving on to the Conclusions, we consider the ratio of the time taken by the algorithms, i.e. with Graham Scan's time in numerator and Jarvis' March's time in the denominator.
+  
+```{r}
+a <- GrahamScan.Time/JarvisMarch.Time
+plot(N, a, type = "l", xlab = "Number of Points", ylab = "Ratio of Times = Graham Scan's Time / Jarvis March's Time", main = "")
+```
+
+## Conclusions
+
+1. We see that the algorithm Jarvis March takes less time than Graham Scan. This is probably due to the fact that Jarvis March has a complexity of $O(nh)$, where $h$ is the size of the convex hull and Graham Scan has an average complexity of $O(n\log{n})$. Now, since we are generating points in a very limited area, therefore, generating more random points will indicate $h$ can be much lower than $O(n)$.
+
+2. However, from the plot of the ratio of the time, we see an indication that the growth rate of Jarvis March is higher than the growth rate of Graham Scan. This is also suggested by the basic complexity analysis for these algorithms.
+
+
+# THANK YOU
+
+
+
+
+
+
+
+
+
+
+
+

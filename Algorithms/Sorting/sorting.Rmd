@@ -1,0 +1,77 @@
+---
+title: "Assignment2"
+author: "Subhrajyoty Roy (Roll No. - BS1613)"
+date: "August 11, 2018"
+output:
+  html_document:
+    df_print: paged
+fontsize: 12pt
+---
+
+## Introduction
+
+  This Assignment comprises of the simulation of different sorting techniques like Merge Sort, Quick Sort and Heap Sort. The number of comparisons made and the time taken by these algorithms are obtained for different sizes of inputs.
+  
+## Simulation Results
+  
+* The number of comparison is the average number of comparisons that the particular algorithm took to sort 25 randomly generated arrays of a given size.
+ 
+* The time is the total amount of time in milliseconds taken by the algorithm to sort 5,000 randomly generated arrays of a given size.
+  
+  
+```{r echo=FALSE, comment="", message=FALSE, warning=FALSE}
+library(knitr)
+library(kableExtra)
+N = c(10, 50, 100, 200, 500, 1000, 2500, 5000)
+
+Mergesort.Comparison = c(23, 221, 541, 1282, 3854, 8707, 25113, 55226)
+Quicksort.Comparison = c(27, 252, 616, 1506, 4592, 10670, 31737, 68915)
+Heapsort.Comparison = c(39, 389, 970, 2338, 7122, 16251, 47360, 104687)
+
+Mergesort.Time = c(16, 83, 185, 360, 1023, 2162, 6124, 12876)
+Quicksort.Time = c(15, 63, 134, 243, 678, 1494, 4203, 7305)
+Heapsort.Time = c(16, 94, 203, 422, 1186, 2632, 7305, 16293)
+
+data1 = data.frame(N, Mergesort.Comparison, Quicksort.Comparison, Heapsort.Comparison)
+
+data2 = data.frame(N, Mergesort.Time, Quicksort.Time, Heapsort.Time)
+
+data1 %>% kable() %>% kable_styling()
+data2 %>% kable() %>% kable_styling()
+```
+
+
+## Figures
+
+ The plots indicates the graph of size of the array (n) vs the logarithm of the complexity of different sorting algorithms, namely with respect to number of Comparisons made and with respect to time. 
+
+```{r echo=FALSE, fig.height=4}
+plot(N, log2(Heapsort.Comparison), type = "l", col = "red", 
+     xlab = "Input Array Size (n)", ylab = "Logarithm (base 2) of Number of Comparisons", main = "n vs log2(Number of Comparisons) for different sorting Algorithms")
+points(N, log2(Quicksort.Comparison), type = "l", col="magenta")
+points(N, log2(Mergesort.Comparison), type = "l", col = "blue")
+legend("bottomright", legend = c("Merge Sort", "Quick Sort", "Heap Sort"), col = c("blue", "magenta", "red"), lwd = 2)
+```
+
+
+```{r echo=FALSE, fig.height=4}
+plot(N, log2(Heapsort.Time), type = "l", col = "red", 
+     xlab = "Input Array Size (n)", ylab = "Logarithm (base 2) of Time taken in milliseconds", main = "n vs log2(Time taken in milliseconds to sort 10,000 arrays) \nfor different sorting Algorithms")
+points(N, log2(Quicksort.Time), type = "l", col="magenta")
+points(N, log2(Mergesort.Time), type = "l", col = "blue")
+legend("bottomright", legend = c("Merge Sort", "Quick Sort", "Heap Sort"), col = c("blue", "magenta", "red"), lwd = 2)
+```
+
+## Conclusions
+
+* Theroetically, Heap sort is asymptotically better than Merge sort and Quick sort. However, the above results show that Heap Sort uses more comparisons than Quick sort and Merge Sort. This is because Heap sort usually performs better for large values, possibly much larger than $n=5000$.
+
+* Although Merge Sort uses less number of comparisons than Quick sort, quick sort is indeed quick (as uses less amount of time). This is because the merging step in the Merge sort is not done in place, hence the time taken for copying the merged array to the actual array is also included in the mergesort time.
+
+# THANK YOU
+
+
+
+
+
+

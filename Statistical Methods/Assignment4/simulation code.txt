@@ -1,0 +1,5 @@
+set.seed(13)
+
+e= c()
+for(i in 0:13) {e[i]= (pnorm(a[i+1], mean= 50, sd= 5)-pnorm(a[i], mean= 50, sd= 5))*1000}
+ 
